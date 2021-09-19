@@ -15,29 +15,49 @@ class Solution {
             return null;
         }
         
-        Map<Integer, Integer> frequency = new HashMap<>();
-        while(head != null){
-           frequency.merge(head.val, 1, Integer::sum);
-           head = head.next;
+        ListNode node = head;
+        ListNode previous = node;
+        Map<Integer, Integer> values = new HashMap<>();
+        
+        while(node != null){
+            int freq = values.getOrDefault(node.val, 0);
+            values.merge(node.val, 1, Integer::sum);
+            if(freq > 0){
+                previous.next = node.next;
+                node = previous.next;
+            }else{
+                previous = node;
+                node = node.next;
+            }
         }
         
-        List<Integer> dataSet = frequency.entrySet().stream().filter(entry -> entry.getValue() == 1).map(entry -> entry.getKey()).collect(Collectors.toList());
-        
-        if(dataSet == null || dataSet.isEmpty()){
+        if(head == null){
             return null;
         }
         
-        Collections.sort(dataSet);
-
-        ListNode result = new ListNode();
-        ListNode root   = result;
-        for(int i=0; i<dataSet.size(); i++){
-                root.val = dataSet.get(i);
-                if(i < dataSet.size() - 1){
-                    root.next = new ListNode();
-                    root = root.next;
-                } 
+        while(head != null && values.getOrDefault(head.val, 0) > 1){
+            head = head.next;
         }
-      return result;  
+        
+        node = head;
+        previous = node;
+        
+        while(node != null){
+            int freq = values.getOrDefault(node.val, 0);
+            if(freq > 1){
+                if(previous.val == node.val){
+                    previous = node.next;
+                }else{
+                    previous.next = node.next;    
+                }
+                node = previous.next;
+            }else{
+                previous = node;
+                node = node.next;
+            }
+        }
+        
+        
+        return head;
     }
 }
