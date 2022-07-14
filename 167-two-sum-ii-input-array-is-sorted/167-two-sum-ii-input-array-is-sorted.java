@@ -1,31 +1,20 @@
 class Solution {
-    public int[] twoSum(int[] numbers, int target) {
-        for(int i=0; i<numbers.length; i++){
-            int complement = target - numbers[i];
-            int nextIndex = getNextIndex(numbers, complement, i+1);
-            if(nextIndex > i){
-                return new int[]{i+1, nextIndex+1};
-            }
+    
+    
+
+public int[] twoSum(int[] numbers, int target) {
+    Map<Integer, Integer> valueIndexMap = new HashMap(numbers.length + 1, 1);
+    valueIndexMap.put(numbers[0], 0);
+    for(int i=1; i<numbers.length; i++){
+        int complement = target - numbers[i];
+        Integer complementIndex = valueIndexMap.get(complement);
+        if(complementIndex != null){
+            return new int[]{complementIndex.intValue() + 1, i+1};
         }
-        return new int[]{};
-    }
-    
-    
-    private int getNextIndex(int[] numbers, int complement, int startIndex){
-        int start = startIndex, end = numbers.length - 1;
         
-        while(start >= startIndex && start <= end){
-            int mid = ((end - start)/2) + start;
-            
-            if(numbers[mid] > complement){
-                end = mid - 1;
-            }else if(numbers[mid] < complement){
-                start = mid + 1;
-            }else{
-                return mid;
-            }
-        }
-        return -1;
+        valueIndexMap.put(numbers[i], i);
     }
+    return new int[]{};
+}
     
 }
